@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     ${serverButtons}
                 </div>
                 <div class="video-wrapper">
-                    <iframe id="stream-iframe" src="${data.streams[0].url}" allowfullscreen sandbox="allow-scripts allow-same-origin allow-presentation"></iframe>
+                    <iframe id="stream-iframe" src="${data.streams[0].url}" allowfullscreen></iframe>
                 </div>
             `;
         } else {
