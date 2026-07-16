@@ -13,18 +13,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (data) {
         // Stream iframe
         let streamHtml = '';
-        if (data.stream_url) {
+        if (data.streams && data.streams.length > 0) {
             streamHtml = `
                 <div class="video-wrapper">
-                    <iframe src="${data.stream_url}" allowfullscreen></iframe>
-                </div>
-            `;
-        } else if (data.stream && data.stream.length > 0) {
-            // Sometime API returns multiple streams or different structure
-            // Let's assume data.stream[0].link for fallback
-            streamHtml = `
-                <div class="video-wrapper">
-                    <iframe src="${data.stream[0].link || data.stream[0]}" allowfullscreen></iframe>
+                    <iframe src="${data.streams[0].url}" allowfullscreen></iframe>
                 </div>
             `;
         } else {
@@ -33,14 +25,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Download links
         let downloadHtml = '';
-        if (data.download && data.download.length > 0) {
-            downloadHtml = data.download.map(dl => {
+        if (data.downloads && data.downloads.length > 0) {
+            downloadHtml = data.downloads.map(dl => {
                 let links = dl.links.map(link => `
                     <a href="${link.url}" target="_blank" class="download-btn">${link.server}</a>
                 `).join('');
                 return `
                     <div class="download-box">
-                        <h3>${dl.quality || dl.resolution}</h3>
+                        <h3>${dl.quality}</h3>
                         <div class="download-buttons">
                             ${links}
                         </div>
