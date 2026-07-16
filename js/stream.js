@@ -14,9 +14,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Stream iframe
         let streamHtml = '';
         if (data.streams && data.streams.length > 0) {
+            let serverButtons = data.streams.map((stream, index) => `
+                <button class="download-btn server-btn" data-url="${stream.url}" ${index === 0 ? 'style="background: var(--primary); border-color: var(--primary);"' : ''}>
+                    ${stream.server}
+                </button>
+            `).join('');
+
             streamHtml = `
+                <div style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;" id="server-list">
+                    ${serverButtons}
+                </div>
                 <div class="video-wrapper">
-                    <iframe src="${data.streams[0].url}" allowfullscreen></iframe>
+                    <iframe id="stream-iframe" src="${data.streams[0].url}" allowfullscreen></iframe>
                 </div>
             `;
         } else {
@@ -56,6 +65,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                 ${data.next_episode ? `<a href="stream.html?slug=${data.next_episode.slug || data.next_episode}" class="download-btn">Episode Selanjutnya</a>` : '<div></div>'}
             </div>` : ''}
         `;
+
+        // Add event listeners for server buttons
+        const serverBtns = document.querySelectorAll('.server-btn');
+        const iframe = document.getElementById('stream-iframe');
+        if (serverBtns && iframe) {
+            serverBtns.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const url = e.target.getAttribute('data-url');
+                    iframe.src = url;
+                    
+                    // Reset all buttons style
+                    serverBtns.forEach(b => {
+                        b.style.background = 'rgba(255, 255, 255, 0.05)';
+                        b.style.borderColor = 'var(--glass-border)';
+                    });
+                    
+                    // Highlight selected button
+                    e.target.style.background = 'var(--primary)';
+                    e.target.style.borderColor = 'var(--primary)';
+                });
+            });
+        }
     } else {
         content.innerHTML = '<p>Gagal memuat video.</p>';
     }
